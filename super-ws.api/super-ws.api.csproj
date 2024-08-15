@@ -7,4 +7,9 @@
     <RootNamespace>super_ws.api</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\super-ws.client\super-ws.client.csproj" />
+    <ProjectReference Include="..\super-ws.database\super-ws.database.csproj" />
+  </ItemGroup>
+
 </Project>

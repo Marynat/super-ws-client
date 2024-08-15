@@ -1,7 +1,11 @@
+using super_ws.database.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.Development.json", true);
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddSuperDbContext(builder.Configuration);
 
 var app = builder.Build();
 
@@ -22,4 +26,4 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
-app.Run();
+await app.RunAsync();
