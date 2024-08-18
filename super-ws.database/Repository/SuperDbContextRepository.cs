@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using super_ws.database.Entity;
+using System.Net.Sockets;
 
 namespace super_ws.database.Repository;
 
@@ -25,9 +26,9 @@ public class SuperDbContextRepository(SuperDbContext _context, ILogger<SuperDbCo
         return await _context.Quotes.Select(q => q).ToListAsync();
     }
 
-    public async Task<IEnumerable<QuoteEntity>> GetQuotesForMinute(string name, DateTimeOffset key)
+    public async Task<IEnumerable<QuoteEntity>> GetQuotesForMinute(string name, long minuteStart, long minuteEnd)
     {
-        return await _context.Quotes.Where(q => q.Name == name && DateTimeOffset.FromUnixTimeSeconds(q.Time).Minute == key.Minute).ToListAsync();
+        return await _context.Quotes.Where(q => q.Name == name && q.Time >= minuteStart && q.Time < minuteEnd).ToListAsync();
     }
 
     public async Task<QuoteEntity> GetEntity(string key)
@@ -53,6 +54,6 @@ public interface ISuperDbContextRepository
     Task SaveChangesAsync();
     Task<QuoteEntity> GetEntity(string key);
     Task<IEnumerable<QuoteEntity>> GetAllQuotesAsync();
-    Task<IEnumerable<QuoteEntity>> GetQuotesForMinute(string name, DateTimeOffset key);
+    Task<IEnumerable<QuoteEntity>> GetQuotesForMinute(string name, long minuteStart, long minuteEnd);
     Task<bool> AnyQuotesAsync(string key);
 }
