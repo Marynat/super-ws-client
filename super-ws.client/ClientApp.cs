@@ -1,22 +1,24 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using super_ws.client.Humble;
 using super_ws.client.Messages;
 using super_ws.client.Quotes;
 using super_ws.database;
+using super_ws.database.Repository;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 
 namespace super_ws.client;
 
-public class ClientApp(SuperDbContext dbContext, IEnumerable<IQuote> wsConnections, ClientWebSocket webSocket, IConfiguration configuration, ILogger<ClientApp> logger) : IClientApp
+public class ClientApp(ISuperDbContextRepository dbContext, IEnumerable<IQuote> wsConnections, IClientWebSocket webSocket, IConfiguration configuration, ILogger<ClientApp> logger) : IClientApp
 {
 
+    private SubscribeMessage sm = new SubscribeMessage("/subscribe/addlist");
     public async Task RunAsync()
     {
 
         await CreateConnectionAsync();
-        SubscribeMessage sm = new SubscribeMessage("/subscribe/addlist");
         foreach (IQuote quote in wsConnections)
         {
             sm.D.Add(quote.Name);
@@ -49,8 +51,25 @@ public class ClientApp(SuperDbContext dbContext, IEnumerable<IQuote> wsConnectio
         await webSocket.SendAsync(new ArraySegment<byte>(bytes), WebSocketMessageType.Text, true, CancellationToken.None);
     }
 
+    private async Task ReconnectAsync(CancellationToken token)
+    {
+        logger.LogError(webSocket.CloseStatus.ToString());
+        logger.LogError(webSocket.CloseStatusDescription);
+
+        if (token.IsCancellationRequested)
+        {
+            logger.LogError("Could not reconect to the server");
+            return;
+        }
+        await CreateConnectionAsync();
+        await SendSubsribtionMessageAsync(sm);
+    }
+
     private async Task ReceiveMessagesAsync()
     {
+        CancellationTokenSource cancellationTokenSource = new(TimeSpan.FromMinutes(1));
+        CancellationToken token = cancellationTokenSource.Token;
+        int retry = 0;
         logger.LogInformation("Starting to receive messages");
         var buffer = new byte[1024 * 4];
         while (true)
@@ -59,7 +78,7 @@ public class ClientApp(SuperDbContext dbContext, IEnumerable<IQuote> wsConnectio
             {
                 var result = await webSocket.ReceiveAsync(
                     new ArraySegment<byte>(buffer),
-                    CancellationToken.None);
+                   token);
 
                 if (result.MessageType ==
                 WebSocketMessageType.Close)
@@ -72,11 +91,11 @@ public class ClientApp(SuperDbContext dbContext, IEnumerable<IQuote> wsConnectio
                 JsonSerializer.Deserialize<QuotesMessage>(message);
                 logger.LogInformation(message);
             }
-            catch (WebSocketException ex)
+            catch (WebSocketException)
             {
-                logger.LogError(webSocket.CloseStatus.ToString());
-                logger.LogError(webSocket.CloseStatusDescription);
-                break;
+                retry++;
+                await Task.Delay(5000, token);
+                await ReconnectAsync(token);
             }
         }
     }
