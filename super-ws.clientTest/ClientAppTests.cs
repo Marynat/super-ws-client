@@ -4,7 +4,6 @@ using Moq;
 using super_ws.client;
 using super_ws.client.Humble;
 using super_ws.client.Quotes;
-using super_ws.database;
 using super_ws.database.Repository;
 using System.Net.WebSockets;
 
@@ -12,22 +11,36 @@ namespace super_ws.clientTest
 {
     public class ClientAppTests
     {
+        private readonly Mock<ISuperDbContextRepository> dbContextMock;
+        private readonly Mock<IQuote> quote1Mock;
+        private readonly Mock<IQuote> quote2Mock;
+        private readonly Mock<IClientWebSocket> clientWebSocketMock;
+        private readonly Mock<ILogger<ClientApp>> loggerMock;
+        private readonly Mock<IConfigurationSection> sectionMock;
+        private readonly Mock<IConfiguration> configurationMock;
+        private readonly List<IQuote> quotes;
+
+        public ClientAppTests()
+        {
+            dbContextMock = new Mock<ISuperDbContextRepository>();
+            quote1Mock = new Mock<IQuote>();
+            quote2Mock = new Mock<IQuote>();
+            clientWebSocketMock = new Mock<IClientWebSocket>();
+            loggerMock = new Mock<ILogger<ClientApp>>();
+            sectionMock = new Mock<IConfigurationSection>();
+            configurationMock = new Mock<IConfiguration>();
+            quotes = new List<IQuote>();
+
+        }
+
+
         [Fact]
         public async Task ClientAppShouldTryConnectToTheServer()
         {
-            var dbContextMock = new Mock<ISuperDbContextRepository>();
-            var quote1Mock = new Mock<IQuote>();
-            var quote2Mock = new Mock<IQuote>();
-            var qoutes = new List<IQuote>() { quote1Mock.Object, quote2Mock.Object };
-            var clientWebSocketMock = new Mock<IClientWebSocket>();
-            clientWebSocketMock.Setup(c => c.ReceiveAsync(It.IsAny<ArraySegment<byte>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new WebSocketReceiveResult(1, WebSocketMessageType.Close, true));
-            var sectionMock = new Mock<IConfigurationSection>();
-            sectionMock.Setup(s => s.Value).Returns("https://www.fakeConnectionString.com");
-            var configurationMock = new Mock<IConfiguration>();
-            configurationMock.Setup(c => c.GetSection(It.IsAny<string>())).Returns(sectionMock.Object);
-            var logger = new Mock<ILogger<ClientApp>>();
 
-            var app = new ClientApp(dbContextMock.Object, qoutes, clientWebSocketMock.Object, configurationMock.Object, logger.Object);
+            Setup(false);
+
+            var app = new ClientApp(dbContextMock.Object, quotes, clientWebSocketMock.Object, configurationMock.Object, loggerMock.Object);
 
             await app.RunAsync();
 
@@ -37,19 +50,9 @@ namespace super_ws.clientTest
         [Fact]
         public async Task ClientAppShouldSendSubscribtionMessageToTheServer()
         {
-            var dbContextMock = new Mock<ISuperDbContextRepository>();
-            var quote1Mock = new Mock<IQuote>();
-            var quote2Mock = new Mock<IQuote>();
-            var qoutes = new List<IQuote>() { quote1Mock.Object, quote2Mock.Object };
-            var clientWebSocketMock = new Mock<IClientWebSocket>();
-            clientWebSocketMock.Setup(c => c.ReceiveAsync(It.IsAny<ArraySegment<byte>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new WebSocketReceiveResult(1, WebSocketMessageType.Close, true));
-            var sectionMock = new Mock<IConfigurationSection>();
-            sectionMock.Setup(s => s.Value).Returns("https://www.fakeConnectionString.com");
-            var configurationMock = new Mock<IConfiguration>();
-            configurationMock.Setup(c => c.GetSection(It.IsAny<string>())).Returns(sectionMock.Object);
-            var logger = new Mock<ILogger<ClientApp>>();
+            Setup(false);
 
-            var app = new ClientApp(dbContextMock.Object, qoutes, clientWebSocketMock.Object, configurationMock.Object, logger.Object);
+            var app = new ClientApp(dbContextMock.Object, quotes, clientWebSocketMock.Object, configurationMock.Object, loggerMock.Object);
 
             await app.RunAsync();
 
@@ -59,19 +62,9 @@ namespace super_ws.clientTest
         [Fact]
         public async Task ClientAppShouldReceiveMessageFromTheServer()
         {
-            var dbContextMock = new Mock<ISuperDbContextRepository>();
-            var quote1Mock = new Mock<IQuote>();
-            var quote2Mock = new Mock<IQuote>();
-            var qoutes = new List<IQuote>() { quote1Mock.Object, quote2Mock.Object };
-            var clientWebSocketMock = new Mock<IClientWebSocket>();
-            clientWebSocketMock.Setup(c => c.ReceiveAsync(It.IsAny<ArraySegment<byte>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new WebSocketReceiveResult(1, WebSocketMessageType.Close, true));
-            var sectionMock = new Mock<IConfigurationSection>();
-            sectionMock.Setup(s => s.Value).Returns("https://www.fakeConnectionString.com");
-            var configurationMock = new Mock<IConfiguration>();
-            configurationMock.Setup(c => c.GetSection(It.IsAny<string>())).Returns(sectionMock.Object);
-            var logger = new Mock<ILogger<ClientApp>>();
+            Setup(false);
 
-            var app = new ClientApp(dbContextMock.Object, qoutes, clientWebSocketMock.Object, configurationMock.Object, logger.Object);
+            var app = new ClientApp(dbContextMock.Object, quotes, clientWebSocketMock.Object, configurationMock.Object, loggerMock.Object);
 
             await app.RunAsync();
 
@@ -81,23 +74,30 @@ namespace super_ws.clientTest
         [Fact]
         public async Task ClientAppShouldTryToRecconectTheServerWhenConnectionFails()
         {
-            var dbContextMock = new Mock<ISuperDbContextRepository>();
-            var quote1Mock = new Mock<IQuote>();
-            var quote2Mock = new Mock<IQuote>();
-            var qoutes = new List<IQuote>() { quote1Mock.Object, quote2Mock.Object };
-            var clientWebSocketMock = new Mock<IClientWebSocket>();
-            clientWebSocketMock.Setup(c => c.ReceiveAsync(It.IsAny<ArraySegment<byte>>(), It.IsAny<CancellationToken>())).Throws(new WebSocketException());
-            var sectionMock = new Mock<IConfigurationSection>();
-            sectionMock.Setup(s => s.Value).Returns("https://www.fakeConnectionString.com");
-            var configurationMock = new Mock<IConfiguration>();
-            configurationMock.Setup(c => c.GetSection(It.IsAny<string>())).Returns(sectionMock.Object);
-            var logger = new Mock<ILogger<ClientApp>>();
 
-            var app = new ClientApp(dbContextMock.Object, qoutes, clientWebSocketMock.Object, configurationMock.Object, logger.Object);
+            Setup(true);
+
+            var app = new ClientApp(dbContextMock.Object, quotes, clientWebSocketMock.Object, configurationMock.Object, loggerMock.Object);
 
             await Assert.ThrowsAsync<TaskCanceledException>(async () => await app.RunAsync());
 
             clientWebSocketMock.Verify(l => l.ConnectAsync(It.IsAny<Uri>(), It.IsAny<CancellationToken>()), Times.AtLeast(2));
+        }
+
+        private void Setup(bool throws)
+        {
+            if (throws)
+            {
+                clientWebSocketMock.Setup(c => c.ReceiveAsync(It.IsAny<ArraySegment<byte>>(), It.IsAny<CancellationToken>())).Throws(new WebSocketException());
+            }
+            else
+            {
+                clientWebSocketMock.Setup(c => c.ReceiveAsync(It.IsAny<ArraySegment<byte>>(), It.IsAny<CancellationToken>())).ReturnsAsync(new WebSocketReceiveResult(1, WebSocketMessageType.Close, true));
+            }
+            quotes.Add(quote1Mock.Object);
+            quotes.Add(quote2Mock.Object);
+            sectionMock.Setup(s => s.Value).Returns("https://www.fakeConnectionString.com");
+            configurationMock.Setup(c => c.GetSection(It.IsAny<string>())).Returns(sectionMock.Object);
         }
     }
 }
