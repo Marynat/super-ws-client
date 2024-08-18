@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "super-ws.api", "super-ws.api\super-ws.api.csproj", "{7DCFE1F0-C84B-4F50-9153-A07B91071B6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "super-ws.api", "super-ws.api\super-ws.api.csproj", "{7DCFE1F0-C84B-4F50-9153-A07B91071B6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "super-ws.client", "super-ws.client\super-ws.client.csproj", "{BC77E5EC-F6E3-4AD8-8C98-19D54C9506EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "super-ws.client", "super-ws.client\super-ws.client.csproj", "{BC77E5EC-F6E3-4AD8-8C98-19D54C9506EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "super-ws.clientTest", "super-ws.clientTest\super-ws.clientTest.csproj", "{85947103-2134-4E2B-8642-15C7938F2F2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "super-ws.clientTest", "super-ws.clientTest\super-ws.clientTest.csproj", "{85947103-2134-4E2B-8642-15C7938F2F2A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{34BF0B3C-2E3D-46E8-9CD0-039CAE1E7106}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "super-ws.database", "super-ws.database\super-ws.database.csproj", "{F8124D33-C761-48B4-B402-EFA8482C0043}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "super-ws.database", "super-ws.database\super-ws.database.csproj", "{F8124D33-C761-48B4-B402-EFA8482C0043}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "super-ws.databaseTest", "super-ws.databaseTest\super-ws.databaseTest.csproj", "{B94CCA41-0FDD-40C5-9473-5B0CEC6A5539}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "super-ws.databaseTest", "super-ws.databaseTest\super-ws.databaseTest.csproj", "{B94CCA41-0FDD-40C5-9473-5B0CEC6A5539}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,7 +9,7 @@ public static class ServiceCollectionExtension
 {
     public static IServiceCollection AddSuperDbContext(this IServiceCollection services, IConfiguration config)
     {
-        services.AddDbContext<SuperDbContext>(options => options.UseSqlServer(config.GetConnectionString("SuperWs")));
+        services.AddDbContext<SuperDbContext>(options => options.UseSqlServer(config.GetConnectionString("SuperWs"), b => b.MigrationsAssembly("super-ws.client")));
         services.AddTransient<ISuperDbContextRepository, SuperDbContextRepository>();
         return services;
     }

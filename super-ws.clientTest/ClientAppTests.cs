@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -19,6 +20,7 @@ namespace super_ws.clientTest
         private readonly Mock<IConfigurationSection> sectionMock;
         private readonly Mock<IConfiguration> configurationMock;
         private readonly List<IQuote> quotes;
+        private readonly Mock<IMapper> mapper;
 
         public ClientAppTests()
         {
@@ -30,6 +32,7 @@ namespace super_ws.clientTest
             sectionMock = new Mock<IConfigurationSection>();
             configurationMock = new Mock<IConfiguration>();
             quotes = new List<IQuote>();
+            mapper = new Mock<IMapper>();
 
         }
 
@@ -40,7 +43,7 @@ namespace super_ws.clientTest
 
             Setup(false);
 
-            var app = new ClientApp(dbContextMock.Object, quotes, clientWebSocketMock.Object, configurationMock.Object, loggerMock.Object);
+            var app = new ClientApp(dbContextMock.Object, quotes, clientWebSocketMock.Object, configurationMock.Object, loggerMock.Object, mapper.Object);
 
             await app.RunAsync();
 
@@ -52,7 +55,7 @@ namespace super_ws.clientTest
         {
             Setup(false);
 
-            var app = new ClientApp(dbContextMock.Object, quotes, clientWebSocketMock.Object, configurationMock.Object, loggerMock.Object);
+            var app = new ClientApp(dbContextMock.Object, quotes, clientWebSocketMock.Object, configurationMock.Object, loggerMock.Object, mapper.Object);
 
             await app.RunAsync();
 
@@ -64,7 +67,7 @@ namespace super_ws.clientTest
         {
             Setup(false);
 
-            var app = new ClientApp(dbContextMock.Object, quotes, clientWebSocketMock.Object, configurationMock.Object, loggerMock.Object);
+            var app = new ClientApp(dbContextMock.Object, quotes, clientWebSocketMock.Object, configurationMock.Object, loggerMock.Object, mapper.Object);
 
             await app.RunAsync();
 
@@ -77,7 +80,7 @@ namespace super_ws.clientTest
 
             Setup(true);
 
-            var app = new ClientApp(dbContextMock.Object, quotes, clientWebSocketMock.Object, configurationMock.Object, loggerMock.Object);
+            var app = new ClientApp(dbContextMock.Object, quotes, clientWebSocketMock.Object, configurationMock.Object, loggerMock.Object, mapper.Object);
 
             await Assert.ThrowsAsync<TaskCanceledException>(async () => await app.RunAsync());
 
