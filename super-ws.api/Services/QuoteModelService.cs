@@ -8,7 +8,7 @@ namespace super_ws.api.Services
         public async Task<QuoteModel> GetModelForQuoteAsync(string quoteName)
         {
             var currentDate = DateTimeOffset.Now;
-            currentDate.AddSeconds(-currentDate.Second);
+            currentDate = currentDate.AddSeconds(-currentDate.Second);
             QuoteModel quote = new();
             for (int i = 0; i < 30; i++)
             {
