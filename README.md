@@ -9,7 +9,7 @@ I have split the application into two main ones.
 ### About me 
 My name is Mariusz.
 It's my first time using razor pages in Asp.Net Core.
-I see a lot of thins that I could improve, for example the whole showcase of data is rushed, and also i should improve test coverage.
+I see a lot of things that I could improve, for example the whole showcase of data is rushed, and also i should improve test coverage.
 
 ## Build and run.
 After getting the package first thig is to create file application.json in .client and application.Development.json in .api.
@@ -18,6 +18,6 @@ Next stage is to build and run the .client app to connect to server and gather d
 Afterwards you can run the .api app and go to the Bitcoin or Etherium page.
 
 ## Things to improve / next steps
-Give the user ability to select the range of the showed data
-Load new data automatically
+Give the user ability to select the range of the showed data.
+Load new data automatically.
 And much more :)
