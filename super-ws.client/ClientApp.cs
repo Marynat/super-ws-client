@@ -16,9 +16,10 @@ public class ClientApp(ISuperDbContextRepository dbContext, IEnumerable<IQuote> 
 {
 
     private SubscribeMessage sm = new SubscribeMessage("/subscribe/addlist");
+    private List<QuoteMinuteEntity> MinuteEntities = new List<QuoteMinuteEntity>();
+    private DateTimeOffset currentMinute = DateTimeOffset.Now;
     public async Task RunAsync()
     {
-
         await CreateConnectionAsync();
         foreach (IQuote quote in wsConnections)
         {
@@ -89,6 +90,7 @@ public class ClientApp(ISuperDbContextRepository dbContext, IEnumerable<IQuote> 
                     buffer, 0, result.Count);
                 var qoutesMessage = JsonSerializer.Deserialize<QuotesMessage>(message);
                 await SaveQuote(qoutesMessage);
+                await SaveMinuteQoute(qoutesMessage);
                 logger.LogInformation(message);
                 cancellationTokenSource = new(TimeSpan.FromMinutes(1));
             }
@@ -108,6 +110,38 @@ public class ClientApp(ISuperDbContextRepository dbContext, IEnumerable<IQuote> 
             if (await dbContext.AnyQuotesAsync(entity.Id)) continue;
             await dbContext.AddEntityAsync(entity);
         }
+        await dbContext.SaveChangesAsync();
+    }
+
+    private async Task SaveMinuteQoute(QuotesMessage message)
+    {
+        var changeMinute = false;
+        foreach (var price in message.D)
+        {
+            var entity = MinuteEntities.FirstOrDefault(m => m.Name == price.S);
+            if (entity == null)
+            {
+                MinuteEntities.Add(new QuoteMinuteEntity() { Time = currentMinute.AddSeconds(-currentMinute.Second), Open = price.B, Close = price.B, High = price.B, Low = price.B, Name = price.S, Volume = 1 });
+            }
+            else
+            {
+                if (entity.Time.Minute == DateTimeOffset.FromUnixTimeSeconds(price.T).Minute)
+                {
+                    entity.Low = entity.Low > price.B ? price.B : entity.Low;
+                    entity.High = entity.High < price.B ? price.B : entity.High;
+                    entity.Close = price.B;
+                    entity.Volume++;
+                }
+                else
+                {
+                    if (await dbContext.AnyQuoteMinutesAsync(entity.Id)) continue;
+                    await dbContext.AddEntityAsync(entity);
+                    MinuteEntities.Remove(entity);
+                    changeMinute = true;
+                }
+            }
+        }
+        if (changeMinute) currentMinute = DateTimeOffset.Now;
         await dbContext.SaveChangesAsync();
     }
 }

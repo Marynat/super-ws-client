@@ -16,7 +16,7 @@ public class SuperDbContextRepository(SuperDbContext _context, ILogger<SuperDbCo
         }
     }
 
-    public async Task AddRangeAsync(IEnumerable<QuoteEntity> quotes)
+    public async Task AddRangeAsync<T>(IEnumerable<T> quotes)
     {
         await _context.AddRangeAsync(quotes);
     }
@@ -29,6 +29,10 @@ public class SuperDbContextRepository(SuperDbContext _context, ILogger<SuperDbCo
     public async Task<IEnumerable<QuoteEntity>> GetQuotesForMinute(string name, long minuteStart, long minuteEnd)
     {
         return await _context.Quotes.Where(q => q.Name == name && q.Time >= minuteStart && q.Time < minuteEnd).ToListAsync();
+    }
+    public async Task<IEnumerable<QuoteMinuteEntity>> GetQuoteMinutesForRange(string name, DateTimeOffset minuteStart, DateTimeOffset minuteEnd)
+    {
+        return await _context.QuoteMinutes.Where(q => q.Name == name && q.Time >= minuteStart && q.Time < minuteEnd).ToListAsync();
     }
 
     public async Task<QuoteEntity> GetEntity(string key)
@@ -45,15 +49,21 @@ public class SuperDbContextRepository(SuperDbContext _context, ILogger<SuperDbCo
     {
         return await _context.Quotes.AnyAsync(q => q.Id == key);
     }
+    public async Task<bool> AnyQuoteMinutesAsync(string key)
+    {
+        return await _context.QuoteMinutes.AnyAsync(q => q.Id == key);
+    }
 }
 
 public interface ISuperDbContextRepository
 {
     Task AddEntityAsync<T>(T Entity);
-    Task AddRangeAsync(IEnumerable<QuoteEntity> quotes);
+    Task AddRangeAsync<T>(IEnumerable<T> quotes);
     Task SaveChangesAsync();
     Task<QuoteEntity> GetEntity(string key);
     Task<IEnumerable<QuoteEntity>> GetAllQuotesAsync();
     Task<IEnumerable<QuoteEntity>> GetQuotesForMinute(string name, long minuteStart, long minuteEnd);
+    Task<IEnumerable<QuoteMinuteEntity>> GetQuoteMinutesForRange(string name, DateTimeOffset minuteStart, DateTimeOffset minuteEnd);
     Task<bool> AnyQuotesAsync(string key);
+    Task<bool> AnyQuoteMinutesAsync(string key);
 }

@@ -1,9 +1,10 @@
-﻿using super_ws.api.Pages;
+﻿using AutoMapper;
+using super_ws.api.Model;
 using super_ws.database.Repository;
 
 namespace super_ws.api.Services
 {
-    public class QuoteModelService(ISuperDbContextRepository superDb) : IQuoteModelService
+    public class QuoteModelService(ISuperDbContextRepository superDb, IMapper mapper) : IQuoteModelService
     {
         public async Task<QuoteModel> GetModelForQuoteAsync(string quoteName)
         {
@@ -24,6 +25,12 @@ namespace super_ws.api.Services
                 }
             }
             return quote;
+        }
+
+        public async Task<IEnumerable<QuoteMinuteModel>> GetModelForQuoteInRangeAsync(string quoteName, long from, long to)
+        {
+            var entities = await superDb.GetQuoteMinutesForRange(quoteName, DateTimeOffset.FromUnixTimeSeconds(from), DateTimeOffset.FromUnixTimeSeconds(to));
+            return mapper.Map<List<QuoteMinuteModel>>(entities);
         }
     }
 }

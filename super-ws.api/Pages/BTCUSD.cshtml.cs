@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using super_ws.api.Model;
 using super_ws.api.Services;
 
 namespace super_ws.api.Pages

@@ -1,4 +1,4 @@
-﻿namespace super_ws.api.Pages
+﻿namespace super_ws.api.Model
 {
     public class Line()
     {

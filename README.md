@@ -14,8 +14,10 @@ I see a lot of things that I could improve, for example the whole showcase of da
 ## Build and run.
 After getting the package first thig is to create file application.json in .client and application.Development.json in .api.
 Add relevant DB connections strings (for Database: "SuperWs" - as it is in database configuration).
+Then run dotnet ef update-databse from .client aplication - thats where migrations are.
 Next stage is to build and run the .client app to connect to server and gather data.
 Afterwards you can run the .api app and go to the Bitcoin or Etherium page.
+And run postam with route: localhost:port/quotes?symbol=string&from=long&to=long
 
 ## Things to improve / next steps
 Give the user ability to select the range of the showed data.
