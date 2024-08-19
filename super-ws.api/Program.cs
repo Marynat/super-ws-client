@@ -1,11 +1,12 @@
+using super_ws.api.Services;
 using super_ws.database.Extensions;
-using super_ws.database.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.Development.json", true);
 // Add services to the container.
 builder.Services.AddSuperDbContext(builder.Configuration);
+builder.Services.AddTransient<IQuoteModelService, QuoteModelService>();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
