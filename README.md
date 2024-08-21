@@ -17,7 +17,7 @@ Add relevant DB connections strings (for Database: "SuperWs" - as it is in datab
 Then run dotnet ef update-databse from .client aplication - thats where migrations are.
 Next stage is to build and run the .client app to connect to server and gather data.
 Afterwards you can run the .api app and go to the Bitcoin or Etherium page.
-And run postam with route: localhost:port/quotes?symbol=string&from=long&to=long
+And run postman with route: localhost:port/quotes?symbol=string&from=long&to=long
 
 ## Things to improve / next steps
 Give the user ability to select the range of the showed data.
