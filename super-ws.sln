@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "super-ws.database", "super-ws.database\super-ws.database.csproj", "{F8124D33-C761-48B4-B402-EFA8482C0043}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "super-ws.databaseTest", "super-ws.databaseTest\super-ws.databaseTest.csproj", "{B94CCA41-0FDD-40C5-9473-5B0CEC6A5539}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "super-ws.apiTest", "super-ws.databaseTest\super-ws.apiTest.csproj", "{B94CCA41-0FDD-40C5-9473-5B0CEC6A5539}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
