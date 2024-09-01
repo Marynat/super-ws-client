@@ -5,6 +5,6 @@ namespace super_ws.api.Services
     public interface IQuoteModelService
     {
         Task<QuoteModel> GetModelForQuoteAsync(string quoteName);
-        Task<IEnumerable<QuoteMinuteModel>> GetModelForQuoteInRangeAsync(string quoteName, long from, long to);
+        Task<IEnumerable<QuoteMinuteModel>> GetMinuteModelForQuoteInRangeAsync(string quoteName, long from, long to);
     }
 }

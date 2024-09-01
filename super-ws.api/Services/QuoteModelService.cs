@@ -27,7 +27,7 @@ namespace super_ws.api.Services
             return quote;
         }
 
-        public async Task<IEnumerable<QuoteMinuteModel>> GetModelForQuoteInRangeAsync(string quoteName, long from, long to)
+        public async Task<IEnumerable<QuoteMinuteModel>> GetMinuteModelForQuoteInRangeAsync(string quoteName, long from, long to)
         {
             var entities = await superDb.GetQuoteMinutesForRange(quoteName, DateTimeOffset.FromUnixTimeSeconds(from), DateTimeOffset.FromUnixTimeSeconds(to));
             return mapper.Map<List<QuoteMinuteModel>>(entities);

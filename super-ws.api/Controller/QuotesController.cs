@@ -12,7 +12,7 @@ public class QuotesController(IQuoteModelService _service) : ControllerBase
     [HttpGet]
     public async Task<IEnumerable<QuoteMinuteModel>> GetQuotes(string symbol, long from, long to)
     {
-        return await _service.GetModelForQuoteInRangeAsync(symbol, from, to);
+        return await _service.GetMinuteModelForQuoteInRangeAsync(symbol, from, to);
     }
 
 }
